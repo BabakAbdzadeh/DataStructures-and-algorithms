@@ -1,12 +1,12 @@
 //  Graph Data Structur
-class Graph{
+class Graph {
 
   constructor(noOfVertices) {
     this.noOfVertices = noOfVertices;
     this.AdjList = new Map();
   };
 
-  // Private Method
+  // Private Methods
   #remArrVal(v, w) {
     const index = this.AdjList.get(v).indexOf(w);
     if (index > -1) {
@@ -23,19 +23,30 @@ class Graph{
 
   // Public Methods
   addVertex(v) {
-    this.AdjList.set(v, []);
+
+
+      this.AdjList.set(v, []);
+
   };
   addEdge(v, w) {
-    // v source node, w destination node
-    if(this.AdjList.get(w) === true){
+    if(this.AdjList.get(v) !== undefined){
 
-      this.AdjList.get(v).push(w);
+      // v source node, w destination node
+      if (this.AdjList.get(w) !== undefined) {
+
+        this.AdjList.get(v).push(w);
+      }else{
+        this.addVertex(w);
+        this.AdjList.get(v).push(w);
+      }
     }else{
-      this.addVertex(w);
-      this.AdjList.get(v).push(w);
+      console.log(`The problem is ${v} and ${w}`);
+      console.log(this.AdjList.get(v));
     }
-
   };
+  addVertex_ListEdges(v , w){
+    this.AdjList.set(v, w);
+  }
   connectTwoNodes(v, w) {
     this.AdjList.get(v).push(w);
   }
@@ -72,18 +83,34 @@ class Graph{
   };
   returnGraph() {
     return this.AdjList;
+  };
+  graphSize(){
+    return this.AdjList.size;
   }
+  transposeGraph() {
+    const transposeGraph = new Graph(this.noOfVertices);
+    for(let i = 1 ; i <= this.noOfVertices ; i++){
+      transposeGraph.addVertex(i);
+    }
+    var entries = this.AdjList[Symbol.iterator]();
+
+    for( const adjList of entries) {
+      var node = adjList[0];
+      var edgeList = this.AdjList.get(node);
+      if (edgeList !== undefined) {
+
+        for (var head = 0; head < edgeList.length; head++) {
+        
+          transposeGraph.addEdge(edgeList[head], node);
+      }}
+    };
+    return transposeGraph;
+  };
+
+
 };
 
 
 
 
-const test = new Graph(4);
-test.addVertex('1');
-test.addVertex('2');
-test.addVertex('3');
-test.addEdge('1','2');
-test.addEdge('1','3');
-test.addEdge('1','4');
-test.addEdge('4','3');
-test.printGraph();
+module.exports = Graph;
